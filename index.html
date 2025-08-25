@@ -222,9 +222,21 @@
       return { type: row.querySelector('select').value, url: row.querySelector('input').value };
     }).filter(function(a){ return a.type || a.url; });
 
+    // Helper function to ensure URLs are properly formatted
+    function formatUrl(url) {
+      if (!url) return '';
+      url = url.trim();
+      // If URL doesn't start with http:// or https://, add https://
+      if (url && !url.match(/^https?:\/\//i)) {
+        url = 'https://' + url;
+      }
+      return url;
+    }
+
     // Build email fields
     var rows = payload.assets.length ? payload.assets.map(function(a){
-      return '<tr><td style="padding:6px 8px;border:1px solid #e5e7eb;">'+(a.type||'')+'<\/td><td style="padding:6px 8px;border:1px solid #e5e7eb;"><a href="'+(a.url||'')+'" target="_blank">'+(a.url||'')+'<\/a><\/td><\/tr>';
+      var formattedUrl = formatUrl(a.url);
+      return '<tr><td style="padding:6px 8px;border:1px solid #e5e7eb;">'+(a.type||'')+'<\/td><td style="padding:6px 8px;border:1px solid #e5e7eb;"><a href="'+formattedUrl+'" target="_blank">'+formattedUrl+'<\/a><\/td><\/tr>';
     }).join('') : '<tr><td colspan="2" style="padding:6px 8px;border:1px solid #e5e7eb;color:#6b7280;">No assets listed<\/td><\/tr>';
 
     payload.email_subject = 'Ad Asset Intake — ' + (payload.campaign_name || 'New submission');
@@ -255,7 +267,7 @@
           '<tr><td style="padding:6px 8px;border:1px solid #e5e7eb;width:180px;">Announce<\/td><td style="padding:6px 8px;border:1px solid #e5e7eb;white-space:pre-wrap;">'+(payload.copy_announce||'')+'<\/td><\/tr>'+
           '<tr><td style="padding:6px 8px;border:1px solid #e5e7eb;">Final Week<\/td><td style="padding:6px 8px;border:1px solid #e5e7eb;white-space:pre-wrap;">'+(payload.copy_finalweek||'')+'<\/td><\/tr>'+
         '<\/table>'+
-        '<p style="margin-top:12px;"><a href="'+(payload.landing||'#')+'" target="_blank">Landing page<\/a><\/p>'+
+        '<p style="margin-top:12px;"><strong>Landing page:<\/strong> <a href="'+formatUrl(payload.landing)+'" target="_blank">'+formatUrl(payload.landing)+'<\/a><\/p>'+
       '<\/div>';
 
     payload._meta = {
