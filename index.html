@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ad Asset Intake</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    html, body { font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica Neue, Arial, "Apple Color Emoji", "Segoe UI Emoji"; }
+    .required:after { content:"*"; @apply text-rose-600 ml-0.5; }
+  </style>
+</head>
+<body class="bg-neutral-50 text-neutral-900">
+  <div class="max-w-3xl mx-auto p-6 lg:py-10">
+    <header class="mb-8">
+      <div class="flex items-center justify-between">
+        <h1 class="text-2xl sm:text-3xl font-semibold tracking-tight">Ad Asset Intake</h1>
+        <span class="text-sm text-neutral-500">~ 5–8 min</span>
+      </div>
+      <p class="mt-2 text-neutral-600">Use this form to submit creatives and campaign details for production.</p>
+    </header>
+
+    <!-- Progress bar -->
+    <div class="w-full bg-neutral-200 rounded-full h-2 mb-6">
+      <div id="progress" class="bg-black h-2 rounded-full transition-all" style="width: 8%"></div>
+    </div>
+
+    <form id="intakeForm" class="space-y-8">
+      <!-- Contact & Org -->
+      <section class="bg-white rounded-2xl shadow-sm border border-neutral-200 p-6">
+        <h2 class="text-lg font-semibold mb-4">Contact</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="required block text-sm font-medium mb-1">Full name</label>
+            <input name="name" required class="w-full rounded-xl border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900"/>
+          </div>
+          <div>
+            <label class="required block text-sm font-medium mb-1">Email</label>
+            <input type="email" name="email" required class="w-full rounded-xl border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900"/>
+          </div>
+          <div>
+            <label class="required block text-sm font-medium mb-1">Company / Artist</label>
+            <input name="org" required class="w-full rounded-xl border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900"/>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1">Phone</label>
+            <input name="phone" class="w-full rounded-xl border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900"/>
+          </div>
+        </div>
+      </section>
+
+      <!-- Campaign basics -->
+      <section class="bg-white rounded-2xl shadow-sm border border-neutral-200 p-6">
+        <h2 class="text-lg font-semibold mb-4">Campaign</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="required block text-sm font-medium mb-1">Campaign name</label>
+            <input name="campaign_name" required class="w-full rounded-xl border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900" placeholder="e.g., AM//PM SYD SEP"/>
+          </div>
+          <div>
+            <label class="required block text-sm font-medium mb-1">Budget (AUD)</label>
+            <input type="number" name="budget" required min="0" step="1" class="w-full rounded-xl border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900" placeholder="e.g., 350" />
+          </div>
+          <div>
+            <label class="required block text-sm font-medium mb-1">Launch date</label>
+            <input type="date" name="launch_date" required class="w-full rounded-xl border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900" />
+            <p class="mt-1 text-xs text-neutral-500">We need at least 5 days lead time to build your campaign.</p>
+          </div>
+          <div>
+            <label class="required block text-sm font-medium mb-1">End date</label>
+            <input type="date" name="end_date" required class="w-full rounded-xl border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900" />
+          </div>
+        </div>
+        <div class="mt-4">
+          <label class="block text-sm font-medium mb-1">Targeting notes</label>
+          <textarea name="targeting" rows="3" class="w-full rounded-xl border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900" placeholder="Audiences, geos, exclusions, past purchasers, IG engagers, etc."></textarea>
+        </div>
+      </section>
+
+      <!-- Creative assets -->
+      <section class="bg-white rounded-2xl shadow-sm border border-neutral-200 p-6">
+        <h2 class="text-lg font-semibold mb-4">Creative assets</h2>
+        <p class="text-sm text-neutral-600 mb-2">Provide direct links to files (Drive/Dropbox/WeTransfer). Ensure public access or include access instructions. Ideally provide us artwork, a video and some unique “This Week” assets.</p>
+        <p class="text-sm text-rose-600 mb-4">At minimum we need a Square + Story asset to run a campaign.</p>
+
+        <div id="assetList" class="space-y-4"></div>
+        <button type="button" id="addAsset" class="mt-2 inline-flex items-center gap-2 rounded-xl border border-neutral-300 px-3 py-2 text-sm hover:bg-neutral-50">Add asset</button>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
+          <div>
+            <label class="required block text-sm font-medium mb-1">Copy direction (Announce)</label>
+            <textarea name="copy_announce" required rows="2" class="w-full rounded-xl border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900" placeholder="Announce: Enter copy here"></textarea>
+            <textarea name="copy_finalweek" rows="2" class="mt-2 w-full rounded-xl border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900" placeholder="Final Week: Enter copy here"></textarea>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1">Branding & specs</label>
+            <textarea name="brand_specs" rows="4" class="w-full rounded-xl border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900" placeholder="Logos, fonts, safe areas, color constraints, legal lines."></textarea>
+          </div>
+        </div>
+      </section>
+
+      <!-- References & approvals -->
+      <section class="bg-white rounded-2xl shadow-sm border border-neutral-200 p-6">
+        <h2 class="text-lg font-semibold mb-4">References</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium mb-1">Example posts / ads</label>
+            <input type="text" name="reference_1" class="w-full rounded-xl border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900" placeholder="Link to inspiration" />
+          </div>
+          <div>
+            <label class="required block text-sm font-medium mb-1">Landing page</label>
+            <input type="text" name="landing" required class="w-full rounded-xl border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900" placeholder="Link to ticketing" />
+          </div>
+          <div class="sm:col-span-2">
+            <label class="block text-sm font-medium mb-1">Notes</label>
+            <textarea name="notes" rows="3" class="w-full rounded-xl border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900" placeholder="Anything else we should know."></textarea>
+          </div>
+        </div>
+      </section>
+
+      <!-- Consent -->
+      <section class="bg-white rounded-2xl shadow-sm border border-neutral-200 p-6">
+        <h2 class="text-lg font-semibold mb-4">Consent</h2>
+        <label class="inline-flex items-start gap-3 text-sm">
+          <input id="consent" type="checkbox" class="mt-1" />
+          <span>I confirm I have rights to use these assets and grant permission for editing and advertising use.</span>
+        </label>
+      </section>
+
+      <!-- Actions -->
+      <div class="flex flex-col sm:flex-row gap-3">
+        <button type="submit" class="flex-1 rounded-xl bg-black text-white px-4 py-3 hover:bg-neutral-900">Submit</button>
+      </div>
+
+      <p class="text-xs text-neutral-500">By submitting, details are sent to your configured webhook. The payload includes an HTML-formatted summary at <code>email_html</code> and <code>email_subject</code> for easy emailing.</p>
+    </form>
+
+    <footer class="mt-10 text-center">
+      <a href="https://bittersweet-slicer-3f9.notion.site/MARKETING-GUIDELINE-19837d4c426b8026975bfa0cbf4247da?source=copy_link" target="_blank" class="inline-block rounded-lg bg-black text-white px-4 py-2 text-sm hover:bg-neutral-800">View the marketing guideline</a>
+    </footer>
+  </div>
+
+  <script>
+  const WEBHOOK_URL = "https://hooks.zapier.com/hooks/catch/13044106/ut7id0a/"; // Zapier Catch Hook
+  const form = document.getElementById('intakeForm');
+  const progressEl = document.getElementById('progress');
+  const addAssetBtn = document.getElementById('addAsset');
+  const assetList = document.getElementById('assetList');
+
+  // Enforce launch date ≥ today + 5 days
+  const launchInput = form.elements['launch_date'];
+  function toYMD(d){ return d.toISOString().slice(0,10); }
+  const minLaunch = new Date();
+  minLaunch.setDate(minLaunch.getDate() + 5);
+  launchInput.min = toYMD(minLaunch);
+  launchInput.addEventListener('change', function(){
+    if (launchInput.value && launchInput.value < launchInput.min) {
+      alert('We need at least 5 days lead time to build your campaign. Please pick a date on or after ' + launchInput.min + '.');
+      launchInput.value = '';
+    }
+  });
+
+  function updateProgress() {
+    const required = Array.from(form.querySelectorAll('[required]'));
+    const filled = required.filter(el => !!el.value).length;
+    const pct = Math.max(8, Math.round((filled / Math.max(required.length,1))*100));
+    progressEl.style.width = pct + '%';
+  }
+
+  function addAssetRow(prefill) {
+    prefill = prefill || {};
+    var i = assetList.children.length + 1;
+    var wrap = document.createElement('div');
+    wrap.className = 'grid grid-cols-1 sm:grid-cols-12 gap-3 items-end';
+    var html = '';
+    html += '<div class="sm:col-span-3">';
+    html += '<label class="block text-sm font-medium mb-1">Type<\/label>';
+    html += '<select name="asset_type_'+i+'" class="w-full rounded-xl border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900">';
+    html += '<option>Artwork<\/option><option>Video<\/option><option>Photo<\/option><option>This Week<\/option><option>Other<\/option>';
+    html += '<\/select><\/div>';
+    html += '<div class="sm:col-span-8">';
+    html += '<label class="required block text-sm font-medium mb-1">URL<\/label>';
+    html += '<input type="text" name="asset_url_'+i+'" required class="w-full rounded-xl border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900" placeholder="Paste link here" \/>';
+    html += '<\/div>';
+    html += '<div class="sm:col-span-1"><button type="button" class="w-full rounded-xl border border-neutral-300 px-3 py-2 hover:bg-neutral-50" aria-label="Remove">×<\/button><\/div>';
+    wrap.innerHTML = html;
+
+    if (prefill.type) wrap.querySelector('select').value = prefill.type;
+    if (prefill.url)  wrap.querySelector('input').value  = prefill.url;
+    wrap.querySelector('button').addEventListener('click', function(){ wrap.remove(); updateProgress(); });
+    assetList.appendChild(wrap);
+  }
+
+  if (addAssetBtn) addAssetBtn.addEventListener('click', function(){ addAssetRow(); });
+  addAssetRow();
+
+  form.addEventListener('input', updateProgress);
+  updateProgress();
+
+  form.addEventListener('submit', async function(e){
+    e.preventDefault();
+    if (!document.getElementById('consent').checked) {
+      alert('Please confirm consent before submitting.');
+      return;
+    }
+    var data = new FormData(form);
+    var payload = Object.fromEntries(data.entries());
+    payload.assets = Array.from(assetList.children).map(function(row){
+      return { type: row.querySelector('select').value, url: row.querySelector('input').value };
+    }).filter(function(a){ return a.type || a.url; });
+
+    // Build email fields
+    var rows = payload.assets.length ? payload.assets.map(function(a){
+      return '<tr><td style="padding:6px 8px;border:1px solid #e5e7eb;">'+(a.type||'')+'<\/td><td style="padding:6px 8px;border:1px solid #e5e7eb;"><a href="'+(a.url||'')+'" target="_blank">'+(a.url||'')+'<\/a><\/td><\/tr>';
+    }).join('') : '<tr><td colspan="2" style="padding:6px 8px;border:1px solid #e5e7eb;color:#6b7280;">No assets listed<\/td><\/tr>';
+
+    payload.email_subject = 'Ad Asset Intake — ' + (payload.campaign_name || 'New submission');
+    payload.email_html = ''+
+      '<div style="font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;font-size:14px;color:#111827;line-height:1.45">'+
+        '<h2 style="margin:0 0 12px 0;font-size:18px;">Ad Asset Intake<\/h2>'+
+        '<p style="margin:0 0 16px 0;color:#6b7280;">Submitted at '+ new Date().toLocaleString() +'<\/p>'+
+        '<table style="border-collapse:collapse;width:100%;margin-bottom:16px;">'+
+          '<tr><th colspan="2" style="text-align:left;background:#f3f4f6;padding:8px;border:1px solid #e5e7eb;">Contact<\/th><\/tr>'+
+          '<tr><td style="padding:6px 8px;border:1px solid #e5e7eb;width:180px;">Full name<\/td><td style="padding:6px 8px;border:1px solid #e5e7eb;">'+(payload.name||'')+'<\/td><\/tr>'+
+          '<tr><td style="padding:6px 8px;border:1px solid #e5e7eb;">Email<\/td><td style="padding:6px 8px;border:1px solid #e5e7eb;">'+(payload.email||'')+'<\/td><\/tr>'+
+          '<tr><td style="padding:6px 8px;border:1px solid #e5e7eb;">Company / Artist<\/td><td style="padding:6px 8px;border:1px solid #e5e7eb;">'+(payload.org||'')+'<\/td><\/tr>'+
+          '<tr><td style="padding:6px 8px;border:1px solid #e5e7eb;">Phone<\/td><td style="padding:6px 8px;border:1px solid #e5e7eb;">'+(payload.phone||'')+'<\/td><\/tr>'+
+        '<\/table>'+
+        '<table style="border-collapse:collapse;width:100%;margin-bottom:16px;">'+
+          '<tr><th colspan="2" style="text-align:left;background:#f3f4f6;padding:8px;border:1px solid #e5e7eb;">Campaign<\/th><\/tr>'+
+          '<tr><td style="padding:6px 8px;border:1px solid #e5e7eb;width:180px;">Campaign name<\/td><td style="padding:6px 8px;border:1px solid #e5e7eb;">'+(payload.campaign_name||'')+'<\/td><\/tr>'+
+          '<tr><td style="padding:6px 8px;border:1px solid #e5e7eb;">Budget<\/td><td style="padding:6px 8px;border:1px solid #e5e7eb;">'+(payload.budget||'')+'<\/td><\/tr>'+
+          '<tr><td style="padding:6px 8px;border:1px solid #e5e7eb;">Launch date<\/td><td style="padding:6px 8px;border:1px solid #e5e7eb;">'+(payload.launch_date||'')+'<\/td><\/tr>'+
+          '<tr><td style="padding:6px 8px;border:1px solid #e5e7eb;">End date<\/td><td style="padding:6px 8px;border:1px solid #e5e7eb;">'+(payload.end_date||'')+'<\/td><\/tr>'+
+        '<\/table>'+
+        '<table style="border-collapse:collapse;width:100%;margin-bottom:16px;">'+
+          '<tr><th colspan="2" style="text-align:left;background:#f3f4f6;padding:8px;border:1px solid #e5e7eb;">Assets<\/th><\/tr>'+
+          rows+
+        '<\/table>'+
+        '<table style="border-collapse:collapse;width:100%;margin-bottom:16px;">'+
+          '<tr><th colspan="2" style="text-align:left;background:#f3f4f6;padding:8px;border:1px solid #e5e7eb;">Copy<\/th><\/tr>'+
+          '<tr><td style="padding:6px 8px;border:1px solid #e5e7eb;width:180px;">Announce<\/td><td style="padding:6px 8px;border:1px solid #e5e7eb;white-space:pre-wrap;">'+(payload.copy_announce||'')+'<\/td><\/tr>'+
+          '<tr><td style="padding:6px 8px;border:1px solid #e5e7eb;">Final Week<\/td><td style="padding:6px 8px;border:1px solid #e5e7eb;white-space:pre-wrap;">'+(payload.copy_finalweek||'')+'<\/td><\/tr>'+
+        '<\/table>'+
+        '<p style="margin-top:12px;"><a href="'+(payload.landing||'#')+'" target="_blank">Landing page<\/a><\/p>'+
+      '<\/div>';
+
+    payload._meta = {
+      submitted_at: new Date().toISOString(),
+      user_agent: navigator.userAgent,
+      page: location.href,
+      min_launch_date: (function(){ var d=new Date(); d.setDate(d.getDate()+5); return d.toISOString().slice(0,10); })()
+    };
+
+    try {
+      var res = await fetch(WEBHOOK_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+      if (!res.ok) throw new Error('Non-200 response');
+      form.reset();
+      assetList.innerHTML = '';
+      addAssetRow();
+      updateProgress();
+      alert('Submitted. You will receive a confirmation shortly if configured.');
+    } catch (err) {
+      console.error(err);
+      alert('Submission failed. Zapier webhook did not respond as expected. Check that your Zap is ON and the Catch Hook URL is correct.');
+    }
+  });
+</script>
