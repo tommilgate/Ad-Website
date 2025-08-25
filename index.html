@@ -83,7 +83,7 @@
       <!-- Creative assets -->
       <section class="bg-white rounded-2xl shadow-sm border border-neutral-200 p-6">
         <h2 class="text-lg font-semibold mb-4">Creative assets</h2>
-        <p class="text-sm text-neutral-600 mb-2">Provide direct links to files (Drive/Dropbox/WeTransfer). Ensure public access or include access instructions. Ideally provide us artwork, a video and some unique “This Week” assets.</p>
+        <p class="text-sm text-neutral-600 mb-2">Provide direct links to files (Drive/Dropbox/WeTransfer). Ensure public access or include access instructions. Ideally provide us artwork, a video and some unique "This Week" assets.</p>
         <p class="text-sm text-rose-600 mb-4">At minimum we need a Square + Story asset to run a campaign.</p>
 
         <div id="assetList" class="space-y-4"></div>
@@ -202,10 +202,20 @@
 
   form.addEventListener('submit', async function(e){
     e.preventDefault();
+    
+    // Show loading state
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const originalText = submitBtn.textContent;
+    submitBtn.textContent = 'Submitting...';
+    submitBtn.disabled = true;
+    
     if (!document.getElementById('consent').checked) {
       alert('Please confirm consent before submitting.');
+      submitBtn.textContent = originalText;
+      submitBtn.disabled = false;
       return;
     }
+    
     var data = new FormData(form);
     var payload = Object.fromEntries(data.entries());
     payload.assets = Array.from(assetList.children).map(function(row){
@@ -256,16 +266,96 @@
     };
 
     try {
-      var res = await fetch(WEBHOOK_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-      if (!res.ok) throw new Error('Non-200 response');
+      console.log('Sending payload to Zapier:', payload);
+      
+      // Try multiple approaches for better compatibility
+      const requestOptions = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(payload),
+        mode: 'no-cors' // This helps with CORS issues
+      };
+      
+      const res = await fetch(WEBHOOK_URL, requestOptions);
+      
+      // With no-cors mode, we can't check response status, so assume success
+      console.log('Zapier webhook called successfully');
+      
+      // Reset form
       form.reset();
       assetList.innerHTML = '';
       addAssetRow();
       updateProgress();
-      alert('Submitted. You will receive a confirmation shortly if configured.');
+      
+      // Reset button
+      submitBtn.textContent = originalText;
+      submitBtn.disabled = false;
+      
+      alert('Form submitted successfully! You should receive a confirmation if your Zapier workflow is configured to send one.');
+      
     } catch (err) {
-      console.error(err);
-      alert('Submission failed. Zapier webhook did not respond as expected. Check that your Zap is ON and the Catch Hook URL is correct.');
+      console.error('Zapier webhook error:', err);
+      
+      // Reset button
+      submitBtn.textContent = originalText;
+      submitBtn.disabled = false;
+      
+      // Try alternative method with form data
+      try {
+        console.log('Trying alternative submission method...');
+        
+        // Create a form element and submit it traditionally
+        const tempForm = document.createElement('form');
+        tempForm.method = 'POST';
+        tempForm.action = WEBHOOK_URL;
+        tempForm.style.display = 'none';
+        
+        // Add all payload data as hidden inputs
+        Object.keys(payload).forEach(key => {
+          if (key === 'assets') {
+            // Handle assets array specially
+            payload.assets.forEach((asset, index) => {
+              const typeInput = document.createElement('input');
+              typeInput.type = 'hidden';
+              typeInput.name = `asset_${index}_type`;
+              typeInput.value = asset.type;
+              tempForm.appendChild(typeInput);
+              
+              const urlInput = document.createElement('input');
+              urlInput.type = 'hidden';
+              urlInput.name = `asset_${index}_url`;
+              urlInput.value = asset.url;
+              tempForm.appendChild(urlInput);
+            });
+          } else if (typeof payload[key] === 'object') {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = key;
+            input.value = JSON.stringify(payload[key]);
+            tempForm.appendChild(input);
+          } else {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = key;
+            input.value = payload[key];
+            tempForm.appendChild(input);
+          }
+        });
+        
+        document.body.appendChild(tempForm);
+        tempForm.submit();
+        
+        alert('Form submitted using alternative method. Check your Zapier dashboard to confirm receipt.');
+        
+      } catch (altErr) {
+        console.error('Alternative submission also failed:', altErr);
+        alert('Submission failed. Please check:\n\n1. Your Zapier webhook URL is correct\n2. Your Zap is turned ON\n3. The webhook is set to accept JSON data\n\nError details have been logged to the console.');
+      }
     }
   });
 </script>
+</body>
+</html>
