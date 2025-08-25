@@ -257,6 +257,7 @@
           '<tr><td style="padding:6px 8px;border:1px solid #e5e7eb;">Budget<\/td><td style="padding:6px 8px;border:1px solid #e5e7eb;">'+(payload.budget||'')+'<\/td><\/tr>'+
           '<tr><td style="padding:6px 8px;border:1px solid #e5e7eb;">Launch date<\/td><td style="padding:6px 8px;border:1px solid #e5e7eb;">'+(payload.launch_date||'')+'<\/td><\/tr>'+
           '<tr><td style="padding:6px 8px;border:1px solid #e5e7eb;">End date<\/td><td style="padding:6px 8px;border:1px solid #e5e7eb;">'+(payload.end_date||'')+'<\/td><\/tr>'+
+          '<tr><td style="padding:6px 8px;border:1px solid #e5e7eb;">Targeting notes<\/td><td style="padding:6px 8px;border:1px solid #e5e7eb;white-space:pre-wrap;">'+(payload.targeting||'')+'<\/td><\/tr>'+
         '<\/table>'+
         '<table style="border-collapse:collapse;width:100%;margin-bottom:16px;">'+
           '<tr><th colspan="2" style="text-align:left;background:#f3f4f6;padding:8px;border:1px solid #e5e7eb;">Assets<\/th><\/tr>'+
@@ -266,6 +267,12 @@
           '<tr><th colspan="2" style="text-align:left;background:#f3f4f6;padding:8px;border:1px solid #e5e7eb;">Copy<\/th><\/tr>'+
           '<tr><td style="padding:6px 8px;border:1px solid #e5e7eb;width:180px;">Announce<\/td><td style="padding:6px 8px;border:1px solid #e5e7eb;white-space:pre-wrap;">'+(payload.copy_announce||'')+'<\/td><\/tr>'+
           '<tr><td style="padding:6px 8px;border:1px solid #e5e7eb;">Final Week<\/td><td style="padding:6px 8px;border:1px solid #e5e7eb;white-space:pre-wrap;">'+(payload.copy_finalweek||'')+'<\/td><\/tr>'+
+          '<tr><td style="padding:6px 8px;border:1px solid #e5e7eb;">Branding & specs<\/td><td style="padding:6px 8px;border:1px solid #e5e7eb;white-space:pre-wrap;">'+(payload.brand_specs||'')+'<\/td><\/tr>'+
+        '<\/table>'+
+        '<table style="border-collapse:collapse;width:100%;margin-bottom:16px;">'+
+          '<tr><th colspan="2" style="text-align:left;background:#f3f4f6;padding:8px;border:1px solid #e5e7eb;">References<\/th><\/tr>'+
+          '<tr><td style="padding:6px 8px;border:1px solid #e5e7eb;width:180px;">Example posts / ads<\/td><td style="padding:6px 8px;border:1px solid #e5e7eb;">'+(payload.reference_1||'')+'<\/td><\/tr>'+
+          '<tr><td style="padding:6px 8px;border:1px solid #e5e7eb;">Notes<\/td><td style="padding:6px 8px;border:1px solid #e5e7eb;white-space:pre-wrap;">'+(payload.notes||'')+'<\/td><\/tr>'+
         '<\/table>'+
         '<p style="margin-top:12px;"><strong>Landing page:<\/strong> <a href="'+formatUrl(payload.landing)+'" target="_blank">'+formatUrl(payload.landing)+'<\/a><\/p>'+
       '<\/div>';
